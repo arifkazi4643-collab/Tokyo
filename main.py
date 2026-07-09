@@ -13,7 +13,8 @@ GROQ_API_KEY = "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"
 PORT = int(os.environ.get("PORT", 8080))
 # -----------------------
 
-client = Groq(api_key=GROQ_API_KEY, http_client=httpx.Client(proxies={}))
+# Fixed Groq client setup
+client = Groq(api_key=GROQ_API_KEY, http_client=httpx.Client())
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 flask_app = Flask('')
