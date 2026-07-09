@@ -1,5 +1,6 @@
 import os
 import logging
+import httpx
 from flask import Flask
 from threading import Thread
 from telegram import Update
@@ -12,7 +13,8 @@ GROQ_API_KEY = "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"
 PORT = int(os.environ.get("PORT", 8080))
 # -----------------------
 
-client = Groq(api_key=GROQ_API_KEY)
+# Groq Client with fixed HTTPX client to bypass 'proxies' unexpected keyword error
+client = Groq(api_key=GROQ_API_KEY, http_client=httpx.Client(proxies={}))
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 flask_app = Flask('')
@@ -54,19 +56,16 @@ async def handle_any_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if not update.message:
         return
         
-    # Extract text from any source (normal text, caption, or edited text)
     raw_text = update.message.text or update.message.caption or ""
     user_text = raw_text.lower().strip()
 
     if not user_text:
         return
 
-    # RULE: Critical support check
     if any(keyword in user_text for keyword in KEYWORDS):
         await update.message.reply_text(ADMIN_MESSAGE)
         return
 
-    # AI Reply Logic for DM and Groups
     try:
         chat_completion = client.chat.completions.create(
             messages=[
