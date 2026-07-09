@@ -13,7 +13,6 @@ GROQ_API_KEY = "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"
 PORT = int(os.environ.get("PORT", 8080))
 # -----------------------
 
-# Fixed Groq client setup
 client = Groq(api_key=GROQ_API_KEY, http_client=httpx.Client())
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -62,10 +61,12 @@ async def handle_any_message(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if not user_text:
         return
 
+    # Check Support Keywords
     if any(keyword in user_text for keyword in KEYWORDS):
         await update.message.reply_text(ADMIN_MESSAGE)
         return
 
+    # Groq AI Reply Logic
     try:
         chat_completion = client.chat.completions.create(
             messages=[
@@ -113,8 +114,9 @@ def main():
     keep_alive()
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     
+    # Fully fixed handlers matching v21.3 standards
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_any_message))
+    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_any_message))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     
     print("Aapka AI TOKYO Bot Live hai...")
