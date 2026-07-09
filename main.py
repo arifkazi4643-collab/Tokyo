@@ -13,7 +13,6 @@ GROQ_API_KEY = "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"
 PORT = int(os.environ.get("PORT", 8080))
 # -----------------------
 
-# Groq Client with fixed HTTPX client to bypass 'proxies' unexpected keyword error
 client = Groq(api_key=GROQ_API_KEY, http_client=httpx.Client(proxies={}))
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
