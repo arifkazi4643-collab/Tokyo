@@ -116,7 +116,7 @@ def main():
     
     # Strictly Fixed filters for python-telegram-bot v21.3+
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
-    app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_any_message))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_any_message))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     
     print("Aapka AI TOKYO Bot Live hai...")
